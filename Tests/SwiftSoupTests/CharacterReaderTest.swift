@@ -146,6 +146,18 @@ class CharacterReaderTest: XCTestCase {
         XCTAssertEqual(" qux", r.consumeToAny("&", ";"))
     }
 
+    func testConsumeToAnyWithSets() {
+        let r = CharacterReader("One &bar; qux")
+        let charSet: Set<UnicodeScalar> = ["&", ";"]
+        XCTAssertEqual("One ", r.consumeToAny(charSet))
+        XCTAssertTrue(r.matches("&"))
+        XCTAssertTrue(r.matches("&bar;"))
+        XCTAssertEqual("&", r.consume())
+        XCTAssertEqual("bar", r.consumeToAny(charSet))
+        XCTAssertEqual(";", r.consume())
+        XCTAssertEqual(" qux", r.consumeToAny(charSet))
+    }
+
     func testConsumeLetterSequence() {
         let r = CharacterReader("One &bar; qux")
         XCTAssertEqual("One", r.consumeLetterSequence())
@@ -265,6 +277,7 @@ class CharacterReaderTest: XCTestCase {
 			("testConsumeToString", testConsumeToString),
 			("testAdvance", testAdvance),
 			("testConsumeToAny", testConsumeToAny),
+            ("testConsumeToAnyWithSets", testConsumeToAnyWithSets),
 			("testConsumeLetterSequence", testConsumeLetterSequence),
 			("testConsumeLetterThenDigitSequence", testConsumeLetterThenDigitSequence),
 			("testMatches", testMatches),

@@ -139,43 +139,18 @@ public final class CharacterReader {
     }
 
     public func consumeToAny(_ chars: UnicodeScalar...) -> String {
-        return consumeToAny(chars)
+        return consumeToAny(Set(chars))
     }
+    
     public func consumeToAny(_ chars: [UnicodeScalar]) -> String {
+        return consumeToAny(Set(chars))
+    }
+
+    public func consumeToAny(_ chars: Set<UnicodeScalar>) -> String {
         let start: Int = pos
-        let remaining: Int = length
-        let val = input
-        OUTER: while (pos < remaining) {
-			if chars.contains(val[pos]) {
-				break OUTER
-			}
-//            for c in chars {
-//                if (val[pos] == c){
-//                    break OUTER
-//                }
-//            }
+        while pos < length && !chars.contains(input[pos]) {
             pos += 1
         }
-
-        return pos > start ? cacheString(start, pos-start) : CharacterReader.empty
-    }
-
-    public func consumeToAnySorted(_ chars: UnicodeScalar...) -> String {
-        return consumeToAnySorted(chars)
-    }
-    public func consumeToAnySorted(_ chars: [UnicodeScalar]) -> String {
-        let start = pos
-        let remaining = length
-        let val = input
-
-        while (pos < remaining) {
-
-            if chars.contains(val[pos]) {
-                break
-            }
-            pos += 1
-        }
-
         return pos > start ? cacheString(start, pos-start) : CharacterReader.empty
     }
 
